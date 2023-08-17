@@ -15,7 +15,7 @@ with DAG(
         task_id = 'task_library_lec_info',
         http_conn_id='openapi.seoul.go.kr',
         endpoint='{{var.value.apikey_openapi_seoul_go_kr}}/json/SeoulLibraryLectureInfo/1/5/',
-        mehtod='GET',
+        method='GET',
         headers={'Content-Type': 'application/json',
                 'charset': 'utf-8',
                 'Accept': '*/*'}
