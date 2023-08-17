@@ -41,10 +41,9 @@ class SeoulApiToCsvOperator(BaseOperator):
         import requests
         import json 
 
-        headers = {'Content-Type': 'application/json',
-                   'charset': 'utf-8',
-                   'Accept': '*/*'
-                   }
+        headers={'Content-Type': 'application/json',
+                'charset': 'utf-8',
+                'Accept': '*/*'}
 
         request_url = f'{base_url}/{start_row}/{end_row}/'
         if self.base_dt is not None:
