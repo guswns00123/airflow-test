@@ -1,21 +1,21 @@
 from airflow.models.baseoperator import BaseOperator
 from airflow.hooks.base import BaseHook
-import pandas as pd
+import pandas as pd 
 
-class SeoulApiTocsvOperator(BaseOperator):
-    template_fields = {'endpoint', 'path', 'filename', 'base_dt'}
+class SeoulApiToCsvOperator(BaseOperator):
+    template_fields = ('endpoint', 'path','file_name','base_dt')
 
-    def __init__(self, dataset_nm, path, filename, base_dt=None, **kwargs):
+    def __init__(self, dataset_nm, path, file_name, base_dt=None, **kwargs):
         super().__init__(**kwargs)
         self.http_conn_id = 'openapi.seoul.go.kr'
         self.path = path
-        self.filename = filename
+        self.file_name = file_name
         self.endpoint = '{{var.value.apikey_openapi_seoul_go_kr}}/json/' + dataset_nm
         self.base_dt = base_dt
 
     def execute(self, context):
         import os
-
+        
         connection = BaseHook.get_connection(self.http_conn_id)
         self.base_url = f'http://{connection.host}:{connection.port}/{self.endpoint}'
 
@@ -33,23 +33,22 @@ class SeoulApiTocsvOperator(BaseOperator):
                 start_row = end_row + 1
                 end_row += 1000
 
-            
         if not os.path.exists(self.path):
             os.system(f'mkdir -p {self.path}')
-        total_row_df.to_csv(self.path + '/' + self.filename, encoding = 'utf-8', index = False)
+        total_row_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
 
     def _call_api(self, base_url, start_row, end_row):
         import requests
-        import json
+        import json 
 
-        headers = {'Content-Type' : 'applciation/json',
-                   'charset' : 'utf-8',
-                   'Accept' : '*/*'}
-        
-        request_url = f'{base_url}/{start_row}/{end_row}'
+        headers = {'Content-Type': 'application/json',
+                   'charset': 'utf-8',
+                   'Accept': '*/*'
+                   }
+
+        request_url = f'{base_url}/{start_row}/{end_row}/'
         if self.base_dt is not None:
             request_url = f'{base_url}/{start_row}/{end_row}/{self.base_dt}'
-
         response = requests.get(request_url, headers)
         contents = json.loads(response.text)
 
