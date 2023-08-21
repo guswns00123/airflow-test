@@ -47,8 +47,10 @@ class SeoulApiToCsvOperator(BaseOperator):
                 'Accept': '*/*'}
 
         request_url = f'{base_url}/{start_row}/{end_row}/'
+        
         if self.base_dt is not None:
             request_url = f'{base_url}/{start_row}/{end_row}/{self.base_dt}'
+        print("request_url ===> " + request_url)
         response = requests.get(request_url, headers)
         contents = json.loads(response.text)
 
