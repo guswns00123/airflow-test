@@ -20,7 +20,9 @@ class SeoulApiToCsvOperator(BaseOperator):
         print("커넥션값 ===> " + connection.host)
         self.base_url = f'http://{connection.host}:{connection.port}/{self.endpoint}'
         print("base url 값 ===>" + self.base_url)
+        print("endpoint 값 ====> " + self.endpoint)
         total_row_df = pd.DataFrame()
+
         start_row = 1
         end_row = 500
         while True:
