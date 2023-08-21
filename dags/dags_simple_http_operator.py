@@ -14,7 +14,7 @@ with DAG(
     task_library_lec_info = SimpleHttpOperator(
         task_id = 'task_library_lec_info',
         http_conn_id='openapi.seoul.go.kr',
-        endpoint='{{var.value.apikey_openapi_seoul_go_kr}}/json/TbCorona19CountStatus/1/5/',
+        endpoint='{{var.value.apikey_openapi_seoul_go_kr}}/json/SeoulDisableLibraryInfo/1/5/',
         method='GET',
         headers={'Content-Type': 'application/json',
                 'charset': 'utf-8',
