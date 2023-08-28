@@ -10,7 +10,6 @@ with DAG(
 ) as dag:
     tb_lotto_add = LottoApiAddCsvOperator(
         task_id='tb_lotto_add',
-        dataset_nm='TblottoStatus',
         path='/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash }}',
         file_name='TbLottoStatus.csv',
         file = '/opt/airflow/files/TbLottoStatus/TbLottoStatus.csv',
