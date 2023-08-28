@@ -3,9 +3,9 @@ from airflow.hooks.base import BaseHook
 import pandas as pd 
 
 class LottoApiAddCsvOperator(BaseOperator):
-    template_fields = template_fields = ('endpoint', 'file', 'path', 'file_name', 'base_dt')
+    template_fields = template_fields = ('endpoint', 'file', 'path', 'file_name', 'time')
 
-    def __init__(self,  path, file_name, time,file, **kwargs):
+    def __init__(self, path, file_name, time, file, **kwargs):
         super().__init__(**kwargs)
         self.http_conn_id = 'www.dhlottery.co.kr'
         self.path = path
