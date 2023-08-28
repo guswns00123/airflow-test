@@ -1,0 +1,60 @@
+from airflow.models.baseoperator import BaseOperator
+from airflow.hooks.base import BaseHook
+import pandas as pd 
+
+class LottoApiToCsvOperator(BaseOperator):
+    template_fields = ('endpoint', 'path', 'filename', 'base_dt')
+
+    #www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=회차번호
+    def __init__(self, dataset_nm, path, file_name, base_dt=None, **kwargs):
+        super().__init__(**kwargs)
+        self.http_conn_id = 'www.dhlottery.co.kr'
+        self.path = path
+        self.file_name = file_name
+        self.endpoint = 'common.do?method=getLottoNumber&drwNo'
+        self.base_dt = base_dt
+
+    def execute(self, context):
+        import os
+
+        connection = BaseHook.get_connection(self.http_conn_id)
+        print("커넥션값 ===> " + connection.host)
+        self.base_url = f'http://{connection.host}/{self.endpoint}'
+        print("base url 값 ===>" + self.base_url)
+        print("endpoint 값 ====> " + self.endpoint)
+        total_row_df = pd.DataFrame()
+
+        start_drwNo = 1
+        while True:
+            self.log.info(f'시작:{start_drwNo}')
+            row_df = self._call_api(self.base_url, start_drwNo)
+            total_row_df = pd.concat([total_row_df, row_df])
+            if len(row_df) < 500:
+                break
+
+        if not os.path.exists(self.path):
+            os.system(f'mkdir -p {self.path}')
+        total_row_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
+
+    def _call_api(self, base_url, drwNo):
+        import requests
+        import json 
+
+        headers={'Content-Type': 'application/json',
+                'charset': 'utf-8',
+                'Accept': '*/*'}
+
+        request_url = f'{base_url}={drwNo}'
+        
+        if self.base_dt is not None:
+            request_url = f'{base_url}={drwNo}'
+        
+        response = requests.get(request_url, headers)
+        
+        contents = json.loads(response.text)
+
+        key_nm = list(contents.keys())[0]
+        row_data = contents.get(key_nm).get('row')
+        row_df = pd.DataFrame(row_data)
+
+        return row_df
