@@ -41,7 +41,6 @@ class LottoApiAddCsvOperator(BaseOperator):
             headers={'Content-Type': 'application/json',
                     'charset': 'utf-8',
                     'Accept': '*/*'}
-
             request_url = f'{base_url}={drwNo}'
             
             if self.base_dt is not None:
