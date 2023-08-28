@@ -4,7 +4,7 @@ import pendulum
 
 with DAG(
     dag_id='dags_lotto_api',
-    schedule='0 0 * * 6',
+    schedule=None,
     start_date=pendulum.datetime(2023,4,1, tz='Asia/Seoul'),
     catchup=False
 ) as dag:

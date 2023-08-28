@@ -3,7 +3,7 @@ from airflow.hooks.base import BaseHook
 import pandas as pd 
 
 class LottoApiToCsvOperator(BaseOperator):
-    template_fields = ('endpoint', 'path', 'filename', 'base_dt')
+    template_fields = ('endpoint', 'path', 'file_name', 'base_dt')
 
     #www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=회차번호
     def __init__(self, dataset_nm, path, file_name, base_dt=None, **kwargs):
@@ -28,6 +28,7 @@ class LottoApiToCsvOperator(BaseOperator):
         while True:
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
+            print(row_df)
             total_row_df = pd.concat([total_row_df, row_df])
             if len(row_df) < 500:
                 break
@@ -53,8 +54,6 @@ class LottoApiToCsvOperator(BaseOperator):
         
         contents = json.loads(response.text)
 
-        key_nm = list(contents.keys())[0]
-        row_data = contents.get(key_nm).get('row')
-        row_df = pd.DataFrame(row_data)
+        row_df = pd.DataFrame([contents.values()], index = [0])
 
         return row_df
