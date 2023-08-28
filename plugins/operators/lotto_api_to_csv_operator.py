@@ -30,9 +30,10 @@ class LottoApiToCsvOperator(BaseOperator):
             row_df = self._call_api(self.base_url, start_drwNo)
             print(row_df)
             total_row_df = pd.concat([total_row_df, row_df])
-            if len(row_df) < 500:
+            if start_drwNo == 1080:
                 break
-
+            else:
+                start_drwNo += 1
         if not os.path.exists(self.path):
             os.system(f'mkdir -p {self.path}')
         total_row_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
