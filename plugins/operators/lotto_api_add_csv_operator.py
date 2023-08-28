@@ -32,10 +32,9 @@ class LottoApiAddCsvOperator(BaseOperator):
             print(row_df)
             print(row_df.loc[0][2].replace("-",""))
             if self.time == row_df.loc[0][2].replace("-",""):
-                 print("확인")
-            data = pd.concat([data, row_df])
-            
-            if start_drwNo == 1082: break
+                print("확인")
+                data = pd.concat([data, row_df])
+                break
             else: start_drwNo+=1
 
         if not os.path.exists(self.path):
