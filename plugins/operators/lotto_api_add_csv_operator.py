@@ -44,9 +44,6 @@ class LottoApiAddCsvOperator(BaseOperator):
                     'Accept': '*/*'}
             request_url = f'{base_url}={drwNo}'
             
-            if self.base_dt is not None:
-                request_url = f'{base_url}={drwNo}'
-            
             response = requests.get(request_url, headers)
             
             contents = json.loads(response.text)
