@@ -30,10 +30,15 @@ class LottoApiAddCsvOperator(BaseOperator):
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
             print(row_df)
+            print(row_df.loc[0])
             total_row_df = pd.concat([data, row_df])
             print(total_row_df)
-            if start_drwNo == 1080: break
+            if start_drwNo == 1082: break
+            else: start_drwNo+=1
 
+        if not os.path.exists(self.path):
+            os.system(f'mkdir -p {self.path}')
+        total_row_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
         
     def _call_api(self, base_url, drwNo):
             import requests
