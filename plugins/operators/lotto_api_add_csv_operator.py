@@ -24,6 +24,7 @@ class LottoApiAddCsvOperator(BaseOperator):
         #'파일경로/파일이름.csv'
         data = pd.read_csv(self.file)
         print(data)
+
         start_drwNo = 1080
         while True:
             self.log.info(f'시작:{start_drwNo}')
@@ -36,7 +37,7 @@ class LottoApiAddCsvOperator(BaseOperator):
         
     def _call_api(self, base_url, drwNo):
             import requests
-            import json 
+            import json
 
             headers={'Content-Type': 'application/json',
                     'charset': 'utf-8',
