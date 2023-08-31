@@ -37,7 +37,7 @@ class LottoApiAddCsvOperator(BaseOperator):
                 #              'bnsNo':row_df.loc[0][8],'firstAccumant':row_df.loc[0][9],'drwNo':row_df.loc[0][10],'drwNo2':row_df.loc[0][11],
                 #              'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
 
-                new_df = pd.concat([data,row_df], ignore_index= True)
+                new_df = pd.concat([data,row_df], ignore_index= False)
                 print(new_df.shape)
                 print("확인")
                 break
@@ -46,7 +46,7 @@ class LottoApiAddCsvOperator(BaseOperator):
 
         if not os.path.exists(self.path):
             os.system(f'mkdir -p {self.path}')
-        new_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=True)
+        new_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
         
     def _call_api(self, base_url, drwNo):
             import requests
