@@ -37,7 +37,7 @@ class LottoApiAddCsvOperator(BaseOperator):
                 #              'bnsNo':row_df.loc[0][8],'firstAccumant':row_df.loc[0][9],'drwNo':row_df.loc[0][10],'drwNo2':row_df.loc[0][11],
                 #              'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
 
-                new_df = pd.concat([data,row_df], ignore_index= False)
+                new_df = pd.concat([data,row_df], ignore_index= True)
                 print(new_df.shape)
                 print("확인")
                 break
@@ -61,6 +61,7 @@ class LottoApiAddCsvOperator(BaseOperator):
             
             contents = json.loads(response.text)
 
-            row_df = pd.DataFrame([contents.values()], index = [0])
+            row_df = pd.DataFrame([contents.values()], index = ['toSellamnt','returnvalue','drwNoDate','firstWinamnt','drwNo6','drwtNo4','firstPrzwnerCo','drwNo5',
+                                                                'bnsNo','firstAccumant','drwNo','drwNo2','drwtNo3','drwtNo1'])
   
             return row_df
