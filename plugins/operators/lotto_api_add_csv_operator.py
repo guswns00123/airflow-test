@@ -29,8 +29,8 @@ class LottoApiAddCsvOperator(BaseOperator):
         while True:
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
-            print(row_df.loc[0][2].replace("-",""))
-            if self.time == row_df.loc[0][2].replace("-",""):
+            
+            if self.time == row_df.loc[0]['drwNoDate'].replace("-",""):
                 
                 # data.append({'toSellamnt':row_df.loc[0][0],'returnvalue':row_df.loc[0][1],'drwNoDate':row_df.loc[0][2],'firstWinamnt':row_df.loc[0][3],
                 #              'drwNo6':row_df.loc[0][4],'drwtNo4':row_df.loc[0][5],'firstPrzwnerCo':row_df.loc[0][6],'drwNo5':row_df.loc[0][7],
