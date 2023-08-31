@@ -33,7 +33,7 @@ class LottoApiAddCsvOperator(BaseOperator):
             print(row_df.loc[0][2].replace("-",""))
             if self.time == row_df.loc[0][2].replace("-",""):
                 print("확인")
-                data = pd.concat([data, row_df])
+                data = pd.concat([data, [row_df]])
                 break
             else: 
                  data = pd.concat([data, row_df])
@@ -58,4 +58,4 @@ class LottoApiAddCsvOperator(BaseOperator):
 
             row_df = pd.DataFrame([contents.values()], index = [0])
             print(contents.keys())
-            return row_df
+            return contents.values()
