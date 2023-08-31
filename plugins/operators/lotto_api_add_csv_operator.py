@@ -23,7 +23,6 @@ class LottoApiAddCsvOperator(BaseOperator):
         
         #'파일경로/파일이름.csv'
         data = pd.read_csv(self.file)
-        print(data)
 
         start_drwNo = 1082
         while True:
@@ -38,8 +37,6 @@ class LottoApiAddCsvOperator(BaseOperator):
                 #              'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
 
                 new_df = pd.concat([data,row_df], ignore_index= True)
-                print(new_df.shape)
-                print("확인")
                 break
             else: 
                  start_drwNo+=1
