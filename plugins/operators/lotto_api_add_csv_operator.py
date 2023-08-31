@@ -35,7 +35,9 @@ class LottoApiAddCsvOperator(BaseOperator):
                 print("확인")
                 data = pd.concat([data, row_df])
                 break
-            else: start_drwNo+=1
+            else: 
+                 data = pd.concat([data, row_df])
+                 start_drwNo+=1
 
         if not os.path.exists(self.path):
             os.system(f'mkdir -p {self.path}')
