@@ -29,14 +29,15 @@ class LottoApiAddCsvOperator(BaseOperator):
         while True:
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
-            print(row_df)
             print(row_df.loc[0][2].replace("-",""))
             if self.time == row_df.loc[0][2].replace("-",""):
                 
-                data.append({'toSellamnt':row_df.loc[0][0],'returnvalue':row_df.loc[0][1],'drwNoDate':row_df.loc[0][2],'firstWinamnt':row_df.loc[0][3],
-                             'drwNo6':row_df.loc[0][4],'drwtNo4':row_df.loc[0][5],'firstPrzwnerCo':row_df.loc[0][6],'drwNo5':row_df.loc[0][7],
-                             'bnsNo':row_df.loc[0][8],'firstAccumant':row_df.loc[0][9],'drwNo':row_df.loc[0][10],'drwNo2':row_df.loc[0][11],
-                             'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
+                # data.append({'toSellamnt':row_df.loc[0][0],'returnvalue':row_df.loc[0][1],'drwNoDate':row_df.loc[0][2],'firstWinamnt':row_df.loc[0][3],
+                #              'drwNo6':row_df.loc[0][4],'drwtNo4':row_df.loc[0][5],'firstPrzwnerCo':row_df.loc[0][6],'drwNo5':row_df.loc[0][7],
+                #              'bnsNo':row_df.loc[0][8],'firstAccumant':row_df.loc[0][9],'drwNo':row_df.loc[0][10],'drwNo2':row_df.loc[0][11],
+                #              'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
+
+                new_df = pd.concat([data,row_df], ignore_index= True)
                 print("확인")
                 break
             else: 
@@ -44,7 +45,7 @@ class LottoApiAddCsvOperator(BaseOperator):
 
         if not os.path.exists(self.path):
             os.system(f'mkdir -p {self.path}')
-        data.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
+        new_df.to_csv(self.path + '/' + self.file_name, encoding='utf-8', index=False)
         
     def _call_api(self, base_url, drwNo):
             import requests
@@ -60,5 +61,5 @@ class LottoApiAddCsvOperator(BaseOperator):
             contents = json.loads(response.text)
 
             row_df = pd.DataFrame([contents.values()], index = [0])
-            print(contents.keys())
+  
             return row_df
