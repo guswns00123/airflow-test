@@ -55,5 +55,5 @@ class LottoApiAddCsvOperator(BaseOperator):
             contents = json.loads(response.text)
 
             row_df = pd.DataFrame([contents.values()], index = [0])
-
+            print(contents.keys())
             return row_df
