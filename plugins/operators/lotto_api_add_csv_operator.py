@@ -29,8 +29,9 @@ class LottoApiAddCsvOperator(BaseOperator):
         while True:
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
-            print(row_df)
-            print(row_df.loc[0][2].replace("-",""))
+            
+            data = pd.concat([data, [row_df]])
+            print("확인123")
             if self.time == row_df.loc[0][2].replace("-",""):
                 print("확인")
                 data = pd.concat([data, [row_df]])
