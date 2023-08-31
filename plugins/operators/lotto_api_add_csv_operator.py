@@ -39,10 +39,6 @@ class LottoApiAddCsvOperator(BaseOperator):
                              'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
                 break
             else: 
-                 data.append({'toSellamnt':row_df.loc[0][0],'returnvalue':row_df.loc[0][1],'drwNoDate':row_df.loc[0][2],'firstWinamnt':row_df.loc[0][3],
-                             'drwNo6':row_df.loc[0][4],'drwtNo4':row_df.loc[0][5],'firstPrzwnerCo':row_df.loc[0][6],'drwNo5':row_df.loc[0][7],
-                             'bnsNo':row_df.loc[0][8],'firstAccumant':row_df.loc[0][9],'drwNo':row_df.loc[0][10],'drwNo2':row_df.loc[0][11],
-                             'drwtNo3':row_df.loc[0][12],'drwtNo1':row_df.loc[0][13]}, ignore_index=True)
                  start_drwNo+=1
 
         if not os.path.exists(self.path):
