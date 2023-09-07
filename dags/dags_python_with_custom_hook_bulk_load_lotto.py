@@ -6,7 +6,7 @@ from hooks.custom_postgres_hook import CustomPostgresHook
 with DAG(
         dag_id='dags_python_with_custom_hook_bulk_load_lotto',
         start_date=pendulum.datetime(2023, 8, 26, tz='Asia/Seoul'),
-        schedule='0 10 * * 6',
+        schedule='0 0 * * 6',
         catchup=False
 ) as dag:
     def insrt_postgres(postgres_conn_id, tbl_nm, file_nm, **kwargs):
@@ -17,6 +17,6 @@ with DAG(
         task_id='insrt_postgres',
         python_callable=insrt_postgres,
         op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom',
-                   'tbl_nm':'TbCorona19CountStatus_bulk2',
-                   'file_nm':'/opt/airflow/files/TbCorona19CountStatus/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbCorona19CountStatus.csv'}
+                   'tbl_nm':'TbLotto_Add_bulk',
+                   'file_nm':'/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv'}
     )
