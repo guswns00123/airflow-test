@@ -59,7 +59,7 @@ class LottoApiAddCsvOperator(BaseOperator):
             
             contents = json.loads(response.text)
 
-            row_df = pd.DataFrame([contents.values()], columns = ['totSellamnt','returnvalue','drwNoDate','firstWinamnt','drwNo6','drwtNo4','firstPrzwnerCo','drwNo5',
+            row_df = pd.DataFrame([contents.values()], columns = ['toSellamnt','returnvalue','drwNoDate','firstWinamnt','drwNo6','drwtNo4','firstPrzwnerCo','drwNo5',
                                                                 'bnsNo','firstAccumant','drwNo','drwNo2','drwtNo3','drwtNo1'])
             print(row_df)
             return row_df
