@@ -12,6 +12,5 @@ RUN apt-get update \
 USER airflow
 RUN pip install \
     apache-airflow-providers-apache-hdfs \
-    apache-airflow-providers-apache-hive \
-    apache-ariflow-providers-apache-spark
+    apache-airflow-providers-apache-hive 
 RUN pip uninstall -y argparse
