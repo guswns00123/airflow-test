@@ -5,7 +5,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from common.predict import predict
 with DAG(
-    dag_id="dags_bash_operator",
+    dag_id="dags_predict",
     schedule="0 0 * * *",
     start_date=pendulum.datetime(2023, 3, 1, tz="Asia/Seoul"),
     #catchup 이 True일 경우 start_date로 정해놓은 시간이 1월 1일인데 내가 만약 3월 1일에 이 DAG을 실행한다면 3월 1일 이전에 밀린 모든 task를 실행 한다는 것
