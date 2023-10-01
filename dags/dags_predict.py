@@ -4,6 +4,8 @@ import pendulum
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from common.predict import predict
+from airflow.operators.email import EmailOperator
+
 with DAG(
     dag_id="dags_predict",
     schedule="0 0 * * *",
@@ -33,7 +35,13 @@ with DAG(
         task_id="bash_t2",
         bash_command="echo $HOSTNAME",
     )
-
+    send_email = EmailOperator(
+            task_id='send_email',
+            to='fresh0911n@naver.com',
+            subject='{{ data_interval_end.in_timezone("Asia/Seoul") | ds }} some_logic 처리결과',
+            html_content='{{ data_interval_end.in_timezone("Asia/Seoul") | ds }} 처리 결과는 <br> \
+                        {{ti.xcom_pull(task_ids="python_t1")}} 했습니다 <br>'
+        )
     #bash task 수행 순서 정해주기
-    bash_t1 >>python_t1>> bash_t2
+    bash_t1 >>python_t1>> bash_t2 >> send_email
     # [END howto_operator_bash]

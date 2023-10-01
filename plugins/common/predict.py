@@ -56,3 +56,4 @@ def predict():
     this_week.append(int(round(ans_6,0)))
     this_week.append(int(round(ans_bns,0)))
     print(this_week)
+    return this_week
