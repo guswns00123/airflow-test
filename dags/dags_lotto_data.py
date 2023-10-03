@@ -6,10 +6,10 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
 
-dataset_dags_dataset_producer = Dataset("dags_lotto_data_add")
+dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
 with DAG(
-    dag_id='dags_lotto_data_add',
+    dag_id='dags_lotto_data',
     schedule='0 0 * * 5',
     start_date=pendulum.datetime(2023,10,1, tz='Asia/Seoul'),
     catchup=False

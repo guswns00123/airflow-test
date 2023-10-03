@@ -6,7 +6,7 @@ from airflow.decorators import task
 from airflow import Dataset
 import pendulum
 
-dataset_dags_dataset_producer = Dataset("dags_lotto_data_add")
+dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
 with DAG(
     dag_id="dags_recommend_lottonum",
