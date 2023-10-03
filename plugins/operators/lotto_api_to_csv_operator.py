@@ -18,10 +18,7 @@ class LottoApiToCsvOperator(BaseOperator):
         import os
 
         connection = BaseHook.get_connection(self.http_conn_id)
-        print("커넥션값 ===> " + connection.host)
         self.base_url = f'http://{connection.host}/{self.endpoint}'
-        print("base url 값 ===>" + self.base_url)
-        print("endpoint 값 ====> " + self.endpoint)
         total_row_df = pd.DataFrame()
 
         start_drwNo = 1

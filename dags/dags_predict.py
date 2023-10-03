@@ -45,3 +45,5 @@ with DAG(
     #bash task 수행 순서 정해주기
     bash_t1 >>python_t1>> bash_t2 >> send_email
     # [END howto_operator_bash]
+
+    
