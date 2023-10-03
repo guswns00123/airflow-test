@@ -3,7 +3,6 @@ from airflow.operators.python import PythonOperator
 from common.predict import predict
 from airflow.operators.email import EmailOperator
 from airflow.decorators import task
-from operators.lotto_api_add_csv_operator import LottoApiAddCsvOperator
 from airflow import Dataset
 import pendulum
 

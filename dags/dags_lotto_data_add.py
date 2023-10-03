@@ -6,7 +6,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
 
-dataset_dags_dataset_producer_1 = Dataset("dags_dataset_lotto_add")
+dataset_dags_dataset_producer_1 = Dataset("dags_lotto_data_add")
 
 with DAG(
     dag_id='dags_lotto_data_add',
