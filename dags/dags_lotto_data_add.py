@@ -6,7 +6,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
 
-
+dataset_dags_dataset_producer = Dataset("dags_lotto_data_add")
 
 with DAG(
     dag_id='dags_lotto_data_add',
@@ -22,6 +22,7 @@ with DAG(
 
     tb_lotto_add = LottoApiAddCsvOperator(
         task_id='tb_lotto_add',
+        outlets=[dataset_dags_dataset_producer],
         path='/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash }}',
         file_name='TbLottoStatus.csv',
         file = '/opt/airflow/files/TbLottoStatus/TbLottoStatus.csv',
@@ -46,4 +47,4 @@ with DAG(
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    bash_task1 >> tb_lotto_add >> insrt_postgres() >> bash_task2
+    bash_task1 >> tb_lotto_add  >> bash_task2
