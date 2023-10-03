@@ -17,6 +17,7 @@ with DAG(
     
     bash_task1 = BashOperator(
         task_id='bash_task1',
+        outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 시작"'
     )
 
@@ -36,6 +37,7 @@ with DAG(
 
     insrt_postgres = PythonOperator(
         task_id='insrt_postgres',
+        outlets=[dataset_dags_dataset_producer],
         python_callable=insrt_postgres,
         op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom',
                    'tbl_nm':'lotto_add_table',
@@ -44,6 +46,7 @@ with DAG(
 
     bash_task2 = BashOperator(
         task_id='bash_task2',
+        outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
