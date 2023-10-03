@@ -10,7 +10,7 @@ dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
 with DAG(
     dag_id='dags_lotto_data',
-    schedule='0 0 * * 5',
+    schedule='0 0 * * 6',
     start_date=pendulum.datetime(2023,10,1, tz='Asia/Seoul'),
     catchup=False
 ) as dag:
