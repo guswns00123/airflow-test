@@ -50,10 +50,32 @@ with DAG(
                    'file_nm':'/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv'}
     )
 
+    def select_postgres(postgres_conn_id, **kwargs):
+        from airflow.providers.postgres.hooks.postgres import PostgresHook
+        from contextlib import closing
+        
+        postgres_hook = PostgresHook(postgres_conn_id)
+        with closing(postgres_hook.get_conn()) as conn:
+            with closing(conn.cursor()) as cursor:
+                dag_id = kwargs.get('ti').dag_id
+                task_id = kwargs.get('ti').task_id
+                run_id = kwargs.get('ti').run_id
+                msg = 'hook select 수행'
+                sql = 'select toSellamnt,returnvalue,drwNoDate, firstWinamnt,firstPrzwnerCo,firstAccumant,drwNo from lotto_add_table;'
+                cursor.execute(sql, (dag_id, task_id, run_id, msg))
+                conn.commit()
+
+    select_postgres_with_hook = PythonOperator(
+        task_id='insrt_postgres_with_hook',
+        python_callable=select_postgres,
+        op_kwargs={'postgres_conn_id':'conn-db-postgres-custom'}
+    )
+    
+
     finish_task = BashOperator(
         task_id='finish_task',
         outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    start_task >> tb_lotto_add >> insrt_postgresdb >> finish_task
+    start_task >> tb_lotto_add >> [insrt_postgresdb,select_postgres_with_hook] >> finish_task
