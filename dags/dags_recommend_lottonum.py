@@ -4,7 +4,9 @@ from common.predict import predict
 from airflow.operators.email import EmailOperator
 from airflow.decorators import task
 from airflow import Dataset
+from datetime import timedelta
 import pendulum
+from config.on_failure_callback_to_kakao import on_failure_callback_to_kakao, send_success_msg_to_kakao
 
 dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
@@ -13,7 +15,11 @@ with DAG(
     schedule=[dataset_dags_dataset_producer],
     start_date=pendulum.datetime(2023, 10, 1, tz="Asia/Seoul"),
     catchup=False,
-    tags=["lotto","recommend"]
+    tags=["lotto","recommend"],
+    default_args={
+        'on_failure_callback':on_failure_callback_to_kakao,
+        'execution_timeout': timedelta(seconds=180)
+    }
 
 ) as dag:
     @task(task_id='inner_function1')
@@ -32,6 +38,10 @@ with DAG(
             html_content='{{ data_interval_end.in_timezone("Asia/Seoul") | ds }} 이번 주 추천 번호는 <br> \
             {{ti.xcom_pull(task_ids="python_t1")}} 입니다 <br>'
     )
+    python_t2 = PythonOperator(
+        task_id = 'python_t2',
+        callable=send_success_msg_to_kakao
+    )
             
 
-    inner_func1() >>python_t1 >> send_email
+    inner_func1() >>python_t1 >> [send_email, python_t2] 
