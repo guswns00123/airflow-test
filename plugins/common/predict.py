@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 
 
-def predict():
+def predict_lotto_num():
     tb = pd.read_csv("/opt/airflow/files/TbLottoStatus/TbLottoStatus.csv")
     tb = tb.drop(columns=['toSellamnt','returnvalue','drwNoDate',' firstWinamnt','firstPrzwnerCo','firstAccumant','drwNo'])
     tb = tb[['drwtNo1','drwNo2','drwtNo3','drwtNo4','drwNo5','drwNo6','bnsNo']]

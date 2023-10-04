@@ -5,6 +5,8 @@ from airflow import Dataset
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
+from datetime import timedelta
+from config.on_failure_callback_to_kakao import on_failure_callback_to_kakao
 
 dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
@@ -12,11 +14,15 @@ with DAG(
     dag_id='dags_lotto_data',
     schedule='0 0 * * 6',
     start_date=pendulum.datetime(2023,10,1, tz='Asia/Seoul'),
-    catchup=False
+    catchup=False,
+    default_args={
+        'on_failure_callback':on_failure_callback_to_kakao,
+        'execution_timeout': timedelta(seconds=180)
+    }
 ) as dag:
     
-    bash_task1 = BashOperator(
-        task_id='bash_task1',
+    start_task = BashOperator(
+        task_id='start_task',
         outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 시작"'
     )
@@ -35,7 +41,7 @@ with DAG(
         custom_postgres_hook = CustomPostgresHook(postgres_conn_id=postgres_conn_id)
         custom_postgres_hook.bulk_load(table_name=tbl_nm, file_name=file_nm, delimiter=',', is_header=True, is_replace=True)
 
-    insrt_postgres1 = PythonOperator(
+    insrt_postgresdb = PythonOperator(
         task_id='insrt_postgres',
         outlets=[dataset_dags_dataset_producer],
         python_callable=insrt_postgres,
@@ -44,10 +50,10 @@ with DAG(
                    'file_nm':'/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv'}
     )
 
-    bash_task2 = BashOperator(
-        task_id='bash_task2',
+    finish_task = BashOperator(
+        task_id='finish_task',
         outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    bash_task1 >> tb_lotto_add >> insrt_postgres1 >> bash_task2
+    start_task >> tb_lotto_add >> insrt_postgresdb >> finish_task
