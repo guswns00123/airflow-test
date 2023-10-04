@@ -35,7 +35,7 @@ with DAG(
         custom_postgres_hook = CustomPostgresHook(postgres_conn_id=postgres_conn_id)
         custom_postgres_hook.bulk_load(table_name=tbl_nm, file_name=file_nm, delimiter=',', is_header=True, is_replace=True)
 
-    insrt_postgres = PythonOperator(
+    insrt_postgres1 = PythonOperator(
         task_id='insrt_postgres',
         outlets=[dataset_dags_dataset_producer],
         python_callable=insrt_postgres,
@@ -50,4 +50,4 @@ with DAG(
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    bash_task1 >> tb_lotto_add  >> bash_task2
+    bash_task1 >> tb_lotto_add >> insrt_postgres1 >> bash_task2
