@@ -61,12 +61,12 @@ with DAG(
                 task_id = kwargs.get('ti').task_id
                 run_id = kwargs.get('ti').run_id
                 msg = 'hook select 수행'
-                sql = 'select toSellamnt,returnvalue,drwNoDate, firstWinamnt,firstPrzwnerCo,firstAccumant,drwNo from lotto_add_table;'
+                sql = 'select lotto_add_table.drwtNo1,lotto_add_table.drwNo2,lotto_add_table.drwtNo3, lotto_add_table.drwtNo4,lotto_add_table.drwNo5,lotto_add_table.drwNo6,lotto_add_table.bnsNo from lotto_add_table;'
                 cursor.execute(sql, (dag_id, task_id, run_id, msg))
                 conn.commit()
 
     select_postgres_with_hook = PythonOperator(
-        task_id='insrt_postgres_with_hook',
+        task_id='select_postgres_with_hook',
         python_callable=select_postgres,
         op_kwargs={'postgres_conn_id':'conn-db-postgres-custom'}
     )
