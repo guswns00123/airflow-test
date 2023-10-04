@@ -40,7 +40,8 @@ with DAG(
     )
     python_t2 = PythonOperator(
         task_id = 'python_t2',
-        callable=send_success_msg_to_kakao
+        callable=send_success_msg_to_kakao,
+        
     )
             
 
