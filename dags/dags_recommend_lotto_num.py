@@ -8,7 +8,7 @@ from datetime import timedelta
 import pendulum
 from config.on_failure_callback_to_kakao import on_failure_callback_to_kakao
 from config.send_msg_to_kakao import send_success_msg_to_kakao
-
+from hooks.custom_postgres_hook import CustomPostgresHook
 
 dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
@@ -33,28 +33,16 @@ with DAG(
         python_callable = predict_lotto_num
             
     )
-    def select_postgres(postgres_conn_id, **kwargs):
-            from airflow.providers.postgres.hooks.postgres import PostgresHook
-            from contextlib import closing
-            
-            postgres_hook = PostgresHook(postgres_conn_id)
-            with closing(postgres_hook.get_conn()) as conn:
-                with closing(conn.cursor()) as cursor:
-                    dag_id = kwargs.get('ti').dag_id
-                    task_id = kwargs.get('ti').task_id
-                    run_id = kwargs.get('ti').run_id
-                    msg = 'hook select 수행'
-                    sql = 'select * from lotto_add_table;'
-                    cursor.execute(sql, (dag_id, task_id, run_id, msg))
-                    rows =cursor.fetchall()
-                    print(rows)
-                    conn.commit()
+    
 
-    select_postgres_with_hook = PythonOperator(
-            task_id='select_postgres_with_hook',
-            python_callable=select_postgres,
-            op_kwargs={'postgres_conn_id':'conn-db-postgres-custom'}
-        )
+    def select_postgres(postgres_conn_id, **kwargs):
+        custom_postgres_hook = CustomPostgresHook(postgres_conn_id=postgres_conn_id)
+        custom_postgres_hook.select()
+
+    select_postgresdb = PythonOperator(
+        task_id='select_postgres',
+        python_callable=select_postgres
+    )
     send_num_to_email = EmailOperator(
             task_id='send_email',
             to='fresh0911@naver.com',
@@ -70,4 +58,4 @@ with DAG(
     )
             
 
-    inner_func1() >> predict_lotto_num >> [send_num_to_email, send_num_to_kakao] 
+    inner_func1() >> predict_lotto_num >> select_postgresdb >>[send_num_to_email, send_num_to_kakao] 

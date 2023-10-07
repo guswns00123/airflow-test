@@ -1,6 +1,7 @@
 from airflow.hooks.base import BaseHook
 import psycopg2
 import pandas as pd
+import pandas.io.sql as psql
 
 class CustomPostgresHook(BaseHook):
 
@@ -18,6 +19,13 @@ class CustomPostgresHook(BaseHook):
         self.postgres_conn = psycopg2.connect(host=self.host, user=self.user, password=self.password, dbname=self.dbname, port=self.port)
         return self.postgres_conn
 
+
+    def select(self):
+        conn = self.get_conn()
+        sql = "select * from lotto_add_table;"
+        df = psql.read_sql(sql,conn)
+        df.show()
+        
     def bulk_load(self, table_name, file_name, delimiter: str, is_header: bool, is_replace: bool):
         from sqlalchemy import create_engine
 
