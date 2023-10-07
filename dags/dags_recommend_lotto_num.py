@@ -28,7 +28,7 @@ with DAG(
     def inner_func1(**kwargs):
         print('로또 번호 추천 작업 시작')
 
-    predict_lotto_num = PythonOperator(
+    predict_lotto_num1 = PythonOperator(
         task_id = 'predict_lotto_num',
         python_callable = predict_lotto_num
             
@@ -60,4 +60,4 @@ with DAG(
     )
             
 
-    inner_func1() >> [predict_lotto_num, select_postgresdb] >>[send_num_to_email, send_num_to_kakao] 
+    inner_func1() >> [predict_lotto_num1, select_postgresdb] >>[send_num_to_email, send_num_to_kakao] 
