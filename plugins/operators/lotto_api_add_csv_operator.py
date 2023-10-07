@@ -28,7 +28,8 @@ class LottoApiAddCsvOperator(BaseOperator):
         while True:
             self.log.info(f'시작:{start_drwNo}')
             row_df = self._call_api(self.base_url, start_drwNo)
-            
+            if row_df == False:
+                break
             if self.time == row_df.loc[0,'drwNoDate'].replace("-","") :
                 data = pd.concat([data,row_df], ignore_index= True)
          
@@ -56,6 +57,7 @@ class LottoApiAddCsvOperator(BaseOperator):
             print(contents['returnValue'])
             if contents['returnValue'] == "fail":
                 print("check")
+                return False
             else:   
                 row_df = pd.DataFrame([contents.values()], columns = ['toSellamnt','returnvalue','drwNoDate','firstWinamnt','drwNo6','drwtNo4','firstPrzwnerCo','drwNo5',
                                                                 'bnsNo','firstAccumant','drwNo','drwNo2','drwtNo3','drwtNo1'])
