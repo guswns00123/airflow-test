@@ -29,11 +29,32 @@ with DAG(
         print('로또 번호 추천 작업 시작')
 
     predict_lotto_num = PythonOperator(
-        task_id = 'python_t1',
+        task_id = 'predict_lotto_num',
         python_callable = predict_lotto_num
             
     )
+    def select_postgres(postgres_conn_id, **kwargs):
+            from airflow.providers.postgres.hooks.postgres import PostgresHook
+            from contextlib import closing
+            
+            postgres_hook = PostgresHook(postgres_conn_id)
+            with closing(postgres_hook.get_conn()) as conn:
+                with closing(conn.cursor()) as cursor:
+                    dag_id = kwargs.get('ti').dag_id
+                    task_id = kwargs.get('ti').task_id
+                    run_id = kwargs.get('ti').run_id
+                    msg = 'hook select 수행'
+                    sql = 'select * from lotto_add_table;'
+                    cursor.execute(sql, (dag_id, task_id, run_id, msg))
+                    rows =cursor.fetchall()
+                    print(rows)
+                    conn.commit()
 
+    select_postgres_with_hook = PythonOperator(
+            task_id='select_postgres_with_hook',
+            python_callable=select_postgres,
+            op_kwargs={'postgres_conn_id':'conn-db-postgres-custom'}
+        )
     send_num_to_email = EmailOperator(
             task_id='send_email',
             to='fresh0911@naver.com',
@@ -43,7 +64,7 @@ with DAG(
     )
 
     send_num_to_kakao = PythonOperator(
-        task_id = 'python_t2',
+        task_id = 'send_num_to_kakao',
         python_callable = send_success_msg_to_kakao,
         
     )
