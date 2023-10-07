@@ -41,7 +41,8 @@ with DAG(
 
     select_postgresdb = PythonOperator(
         task_id='select_postgres',
-        python_callable=select_postgres
+        python_callable=select_postgres,
+        op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom'}
     )
     send_num_to_email = EmailOperator(
             task_id='send_email',
