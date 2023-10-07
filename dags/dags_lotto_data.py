@@ -78,4 +78,4 @@ with DAG(
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    start_task >> tb_lotto_add >> [insrt_postgresdb,select_postgres_with_hook] >> finish_task
+    start_task >> tb_lotto_add >> [insrt_postgresdb] >> finish_task
