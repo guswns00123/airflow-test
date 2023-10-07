@@ -2,6 +2,7 @@ from airflow.hooks.base import BaseHook
 import psycopg2
 import pandas as pd
 import pandas.io.sql as psql
+from sklearn.linear_model import LinearRegression
 
 class CustomPostgresHook(BaseHook):
 
@@ -24,9 +25,59 @@ class CustomPostgresHook(BaseHook):
         self.log.info('테이블 :' + table_name)
         conn = self.get_conn()
         sql = "select * from lotto_add_table;"
-        df = psql.read_sql(sql,conn)
-        df.info()
-        
+        tb = psql.read_sql(sql,conn)
+        tb = tb.drop(columns=['toSellamnt','returnvalue','drwNoDate',' firstWinamnt','firstPrzwnerCo','firstAccumant','drwNo'])
+        tb.info()
+        tb = tb.sample(n=700)
+        tb.head()
+
+
+        x = tb['num']
+        num_1 = tb['drwtNo1']
+        num_2 = tb['drwNo2']
+        num_3 = tb['drwtNo3']
+        num_4 = tb['drwtNo4']
+        num_5 = tb['drwNo5']
+        num_6 = tb['drwNo6']
+        num_bns = tb['bnsNo']
+
+        pre_num_1 = LinearRegression()
+        pre_num_1.fit(x.values.reshape(-1,1),num_1)
+        ans_1 = pre_num_1.predict([[len(tb)+1]])[0]
+
+        pre_num_2 = LinearRegression()
+        pre_num_2.fit(x.values.reshape(-1,1),num_2)
+        ans_2 = pre_num_2.predict([[len(tb)+1]])[0]
+
+        pre_num_3 = LinearRegression()
+        pre_num_3.fit(x.values.reshape(-1,1),num_3)
+        ans_3 = pre_num_3.predict([[len(tb)+1]])[0]
+
+        pre_num_4 = LinearRegression()
+        pre_num_4.fit(x.values.reshape(-1,1),num_4)
+        ans_4 = pre_num_4.predict([[len(tb)+1]])[0]
+
+        pre_num_5 = LinearRegression()
+        pre_num_5.fit(x.values.reshape(-1,1),num_5)
+        ans_5 = pre_num_5.predict([[len(tb)+1]])[0]
+        pre_num_6 = LinearRegression()
+        pre_num_6.fit(x.values.reshape(-1,1),num_6)
+        ans_6 = pre_num_6.predict([[len(tb)+1]])[0]
+
+        pre_num_bns = LinearRegression()
+        pre_num_bns.fit(x.values.reshape(-1,1),num_bns)
+        ans_bns = pre_num_bns.predict([[len(tb)+1]])[0]
+
+        this_week = []
+        this_week.append(int(round(ans_1,0)))
+        this_week.append(int(round(ans_2,0)))
+        this_week.append(int(round(ans_3,0)))
+        this_week.append(int(round(ans_4,0)))
+        this_week.append(int(round(ans_5,0)))
+        this_week.append(int(round(ans_6,0)))
+        this_week.append(int(round(ans_bns,0)))
+        print(this_week)
+        return this_week
     def bulk_load(self, table_name, file_name, delimiter: str, is_header: bool, is_replace: bool):
         from sqlalchemy import create_engine
 
