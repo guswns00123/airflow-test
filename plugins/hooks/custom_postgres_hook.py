@@ -20,7 +20,8 @@ class CustomPostgresHook(BaseHook):
         return self.postgres_conn
 
 
-    def select(self):
+    def select(self, table_name):
+        self.log.info('테이블 :' + table_name)
         conn = self.get_conn()
         sql = "select * from lotto_add_table;"
         df = psql.read_sql(sql,conn)

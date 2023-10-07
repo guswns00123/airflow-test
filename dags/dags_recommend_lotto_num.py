@@ -35,14 +35,15 @@ with DAG(
     )
     
 
-    def select_postgres(postgres_conn_id, **kwargs):
+    def select_postgres(postgres_conn_id, tbl_nm, **kwargs):
         custom_postgres_hook = CustomPostgresHook(postgres_conn_id=postgres_conn_id)
-        custom_postgres_hook.select()
+        custom_postgres_hook.select(table_name=tbl_nm)
 
     select_postgresdb = PythonOperator(
         task_id='select_postgres',
         python_callable=select_postgres,
-        op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom'}
+        op_kwargs={'postgres_conn_id': 'conn-db-postgres-custom',
+                   'tbl_nm':'lotto_add_table'}
     )
     send_num_to_email = EmailOperator(
             task_id='send_email',
