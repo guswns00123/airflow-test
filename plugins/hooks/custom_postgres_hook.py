@@ -25,7 +25,7 @@ class CustomPostgresHook(BaseHook):
         conn = self.get_conn()
         sql = "select * from lotto_add_table;"
         df = psql.read_sql(sql,conn)
-        df.show()
+        df.info()
         
     def bulk_load(self, table_name, file_name, delimiter: str, is_header: bool, is_replace: bool):
         from sqlalchemy import create_engine
