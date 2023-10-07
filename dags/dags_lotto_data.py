@@ -61,7 +61,7 @@ with DAG(
                 task_id = kwargs.get('ti').task_id
                 run_id = kwargs.get('ti').run_id
                 msg = 'hook select 수행'
-                sql = 'select lotto_add_table.drwtNo1,lotto_add_table.drwNo2,lotto_add_table.drwtNo3, lotto_add_table.drwtNo4,lotto_add_table.drwNo5,lotto_add_table.drwNo6,lotto_add_table.bnsNo from lotto_add_table;'
+                sql = 'select * from lotto_add_table;'
                 cursor.execute(sql, (dag_id, task_id, run_id, msg))
                 conn.commit()
 
