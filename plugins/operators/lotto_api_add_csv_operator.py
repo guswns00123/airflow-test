@@ -54,7 +54,7 @@ class LottoApiAddCsvOperator(BaseOperator):
             
             contents = json.loads(response.text)
             print(contents['returnValue'])
-            if contents['returnValue'] == "Fail":
+            if contents['returnValue'] == "fail":
                 print("check")
             else:   
                 row_df = pd.DataFrame([contents.values()], columns = ['toSellamnt','returnvalue','drwNoDate','firstWinamnt','drwNo6','drwtNo4','firstPrzwnerCo','drwNo5',
