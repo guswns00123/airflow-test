@@ -60,4 +60,6 @@ with DAG(
     )
             
 
-    inner_func1() >> [predict_lotto_num1, select_postgresdb] >>[send_num_to_email, send_num_to_kakao] 
+    inner_func1() >> [predict_lotto_num1, select_postgresdb]
+    predict_lotto_num1 >> send_num_to_email
+    select_postgresdb >> send_num_to_kakao
