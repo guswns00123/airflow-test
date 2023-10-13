@@ -64,7 +64,7 @@ with DAG(
         python_callable=upload_to_s3,
         op_kwargs={
             'filename' : '/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv',
-            'key' : 'dataSource/test.csv',
+            'key' : 'lotto/test.csv',
             'bucket_name' : 'morzibucket'
         })
     
