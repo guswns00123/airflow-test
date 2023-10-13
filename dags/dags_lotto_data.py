@@ -53,7 +53,7 @@ with DAG(
     )
 
     def upload_to_s3(filename, key, bucket_name):
-        hook = S3Hook('aws_conn')
+        hook = S3Hook('aws_default')
         hook.load_file(filename=filename,
                        key = key,
                        bucket_name=bucket_name,
