@@ -7,6 +7,8 @@ from airflow.operators.python import PythonOperator
 from hooks.custom_postgres_hook import CustomPostgresHook
 from datetime import timedelta
 from config.on_failure_callback_to_kakao import on_failure_callback_to_kakao
+from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+
 
 dataset_dags_dataset_producer = Dataset("dags_lotto_data")
 
@@ -50,13 +52,26 @@ with DAG(
                    'file_nm':'/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv'}
     )
 
+    def upload_to_s3(filename, key, bucket_name):
+        hook = S3Hook('aws_conn')
+        hook.load_file(filename=filename,
+                       key = key,
+                       bucket_name=bucket_name,
+                       replace=True)
     
+    upload_s3 = PythonOperator(
+        task_id = 'upload_s3',
+        python_callable=upload_to_s3,
+        op_kwargs={
+            'filename' : '/opt/airflow/files/TbLottoAdd/{{data_interval_end.in_timezone("Asia/Seoul") | ds_nodash}}/TbLottoStatus.csv',
+            'key' : 'dataSource/test.csv',
+            'bucket_name' : 'morzibucket'
+        })
     
-
     finish_task = BashOperator(
         task_id='finish_task',
         outlets=[dataset_dags_dataset_producer],
         bash_command='echo "전 주 데이터 추가 작업 완료"'
     )
 
-    start_task >> tb_lotto_add >> [insrt_postgresdb] >> finish_task
+    start_task >> tb_lotto_add >> [insrt_postgresdb, upload_s3] >> finish_task
